@@ -36,29 +36,25 @@ public class EventObject : ScriptableObject
 		    Debug.Log ("Activating Event: " + this.name);
         for (int i = registeredListeners.Count-1; i >= 0 ; i--)
         {
-            if (registeredListeners[i] != null)
-            {
-                if (debug)
-                    Debug.Log("Event " + this.name + "calling: " + registeredListeners[i].gameObject.name);
-                registeredListeners[i].EventActivated();
-            }
-            else
+            if (registeredListeners[i] == null)
             {
                 registeredListeners.RemoveAt(i);
+                continue;
             }
+            if (debug)
+                Debug.Log("Event " + this.name + "calling: " + registeredListeners[i].gameObject.name);
+            registeredListeners[i].EventActivated();
 		}
         for (int i = registeredDelegates.Count-1; i >= 0 ; i--)
         {
-            if (registeredDelegates[i] != null)
-            {
-                if (debug)
-                    Debug.Log("Event " + this.name + "calling: " + registeredDelegates[i].Target);
-                registeredDelegates[i].Invoke();
-            }
-            else
+            if (registeredDelegates[i] == null)
             {
                 registeredDelegates.RemoveAt(i);
+                continue;
             }
-		}
+            if (debug)
+                Debug.Log("Event " + this.name + "calling: " + registeredDelegates[i].Target);
+            registeredDelegates[i].Invoke();
+        }
 	}
 }
