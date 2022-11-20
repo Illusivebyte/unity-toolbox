@@ -10,6 +10,7 @@ public class PanelController : MonoBehaviour {
 
     protected virtual void Awake()
     {
+        active = false; 
         animationComponent = this.gameObject.GetComponent<Animation>();
     }
 
