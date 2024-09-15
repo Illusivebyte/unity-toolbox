@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 
 [CreateAssetMenu(menuName="Variable/New Bool")]
-public class BoolVariable : Variable
+public class BoolVariable : Variable<bool>
 {
 	[SerializeField]
 	private bool value;
-    public override StandardVariableType type{ get{ return StandardVariableType.Bool;}}
-	public bool Value
+    public override System.Type type{ get{ return typeof(bool);}}
+	public override bool Value
     {
 		get
 		{
@@ -17,7 +17,7 @@ public class BoolVariable : Variable
 			if (this.value != value) 
             {
 				this.value = value;
-				this.ReportChange ();
+				this.ReportChange();
 				if(this.debug)
 					Debug.Log (this.name + ": " + this.value);
 			}

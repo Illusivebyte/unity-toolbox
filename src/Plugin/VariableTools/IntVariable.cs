@@ -1,17 +1,18 @@
 ﻿using UnityEngine;
 
 [CreateAssetMenu(menuName="Variable/New Int")]
-public class IntVariable : Variable {
+public class IntVariable : Variable <int>
+{
 	[SerializeField]
 	private int value;
-    public override StandardVariableType type
+    public override System.Type type
     { 
         get
         { 
-            return StandardVariableType.Int;
+            return typeof(int);
         }
     }
-	public int Value
+	public override int Value
     {
 		get
 		{
@@ -21,7 +22,7 @@ public class IntVariable : Variable {
 		{
 			if (this.value != value) {
 				this.value = value;
-				this.ReportChange ();
+				this.ReportChange();
 				if(this.debug)
 					Debug.Log (this.name + ": " + this.value);
 			}

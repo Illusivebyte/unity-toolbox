@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 
 [CreateAssetMenu(menuName="Variable/New Float")]
-public class FloatVariable : Variable
+public class FloatVariable : Variable<float>
 {
 	[SerializeField]
 	private float value;
-    public override StandardVariableType type{ get{ return StandardVariableType.Float;}}
-	public float Value{
+    public override System.Type type{ get{ return typeof(float);}}
+	public override float Value{
 		get
 		{
 			return this.value;
@@ -16,7 +16,7 @@ public class FloatVariable : Variable
 			if (this.value != value)
             {
 				this.value = value;
-				this.ReportChange ();
+				this.ReportChange();
 				if(this.debug)
 					Debug.Log (this.name + ": " + this.value);
 			}

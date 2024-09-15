@@ -1,18 +1,18 @@
 using UnityEngine;
 
 [CreateAssetMenu(menuName="Variable/New Vector2")]
-public class Vector2Variable : Variable
+public class Vector2Variable : Variable<Vector2>
 {
 	[SerializeField]
 	private Vector2 value;
-    public override StandardVariableType type
+    public override System.Type type
     {
         get
         { 
-            return StandardVariableType.Vector2;
+            return typeof(Vector2);
         }
     }
-	public Vector2 Value{
+	public override Vector2 Value{
 		get
 		{
 			return this.value;

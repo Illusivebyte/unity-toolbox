@@ -1,17 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Variable : ScriptableObject
+public abstract class Variable<T> : ScriptableObject, IObservable
 {
     public string fileName;
-	public enum StandardVariableType{Int, Float, Bool, String, Vector2, Vector3, Quaternion};
-    public virtual StandardVariableType type{ get;}
+    public virtual Type type{ get;}
+    public virtual T Value{ get; set;}
 	public bool debug;
-	public List<VariableListener> registeredListeners = new List<VariableListener>();
-    public delegate void VariableCallbackDelegate();
-    public List<VariableCallbackDelegate> registeredDelegates = new List<VariableCallbackDelegate>();
-    public delegate void VariableValueChanged();
-    public event VariableValueChanged VariableValueChangedEvent;
+    protected List<IObservable.EventCallbackDelegate> changeCallbacks = new List<IObservable.EventCallbackDelegate>();
+
 
     protected void OnEnable()
     {
@@ -21,56 +19,41 @@ public abstract class Variable : ScriptableObject
         }
     }
 
-	public void RegisterForUpdates(VariableListener listener)
-    {
-		this.registeredListeners.Add (listener);
-    }
-
-    public void RegisterForUpdates(VariableCallbackDelegate del)
-    {
-        this.registeredDelegates.Add (del);
-    }
-
-	public void UnregisterForUpdates(VariableListener listener)
-    {
-		this.registeredListeners.Remove (listener);
-	}
-		
-	public void UnregisterForUpdates(VariableCallbackDelegate del)
-    {
-        this.registeredDelegates.Remove (del);
-    }
-
-	protected  void ReportChange(){
+	protected void ReportChange(){
         if (this.debug)
             Debug.Log("Reporting Change: " + this.name);
-        if (this.VariableValueChangedEvent != null)
-            this.VariableValueChangedEvent.Invoke(); 
-        for (int i = registeredListeners.Count-1; i >= 0 ; i--)
+        foreach (IObservable.EventCallbackDelegate callback in this.changeCallbacks)
         {
-            if (registeredListeners[i] == null)
-            {
-                registeredListeners.RemoveAt(i);
-                continue;
-            }
-            if (debug)
-                Debug.Log("Variable " + this.name + "calling: " + registeredListeners[i].gameObject.name);
-            registeredListeners[i].VariableUpdated();
-		}
-        for (int i = registeredDelegates.Count-1; i >= 0 ; i--)
-        {
-            if (registeredDelegates[i] == null)
-            {
-                registeredDelegates.RemoveAt(i);
-                continue;
-            }
-            if (debug)
-                Debug.Log("Variable " + this.name + "calling: " + registeredDelegates[i].Target);
-            registeredDelegates[i].Invoke();
+            callback(this.Value);
         }
     }
      
     public abstract void SaveVariable();
 
     public abstract void LoadVariable();
+
+    public string[] GetEventNames()
+    {
+        return new string[] { "OnChange" };
+    }
+
+    public Type[] GetEventArgs(string eventName)
+    {
+        return new Type[] { this.type };
+    }
+
+    public void RegisterForEvent(IObservable.EventCallbackDelegate del, string eventName)
+    {
+        this.changeCallbacks.Add(del);
+    }
+
+    public void UnregisterForEvent(IObservable.EventCallbackDelegate del, string eventName)
+    {
+        this.changeCallbacks.Remove(del);
+    }
+
+    public void Activate(string eventName, params object[] args)
+    {
+        this.ReportChange();
+    }
 }

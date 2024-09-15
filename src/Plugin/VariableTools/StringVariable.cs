@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 
 [CreateAssetMenu(menuName="Variable/New String")]
-public class StringVariable : Variable
+public class StringVariable : Variable<string>
 {
 	[SerializeField]
 	private string value;
-    public override StandardVariableType type{ get{ return StandardVariableType.String;}}
-	public string Value
+    public override System.Type type{ get{ return typeof(string);}}
+	public override string Value
     {
 		get
 		{
@@ -17,7 +17,7 @@ public class StringVariable : Variable
 			if (this.value != value)
             {
 				this.value = value;
-				this.ReportChange ();
+				this.ReportChange();
 				if(this.debug)
 					Debug.Log (this.name + ": " + this.value);
 			}

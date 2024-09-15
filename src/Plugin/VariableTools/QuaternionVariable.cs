@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 
 [CreateAssetMenu(menuName="Variable/New Quaternion")]
-public class QuaternionVariable : Variable 
+public class QuaternionVariable : Variable<Quaternion> 
 {
 	[SerializeField]
 	private Quaternion value;
-    public override StandardVariableType type{ get{ return StandardVariableType.Quaternion;}}
-	public Quaternion Value
+    public override System.Type type{ get{ return typeof(Quaternion);}}
+	public override Quaternion Value
     {
 		get
 		{
@@ -17,7 +17,7 @@ public class QuaternionVariable : Variable
 			if (this.value != value) 
             {
 				this.value = value;
-				this.ReportChange ();
+				this.ReportChange();
 				if(this.debug)
 					Debug.Log (this.name + ": " + this.value);
 			}
