@@ -10,6 +10,14 @@ public class EventObject : ScriptableObject, IObservable
     public Variable<object>[] args;
     public List<IObservable.EventCallbackDelegate> registeredDelegates = new List<IObservable.EventCallbackDelegate>();
 
+    public void OnEnable()
+    {
+        if (eventName == "")
+        {
+            eventName = this.name;
+        }
+    }
+
     public bool CreateEvent(string name, Type[] args)
     {
         return false;

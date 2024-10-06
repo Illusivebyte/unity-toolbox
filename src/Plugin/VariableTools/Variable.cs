@@ -47,7 +47,18 @@ public abstract class Variable<T> : ScriptableObject, IObservable
         this.changeCallbacks.Add(del);
     }
 
+    public void RegisterForEvent(IObservable.EventCallbackDelegate del)
+    {
+        this.changeCallbacks.Add(del);
+    }
+
+
     public void UnregisterForEvent(IObservable.EventCallbackDelegate del, string eventName)
+    {
+        this.changeCallbacks.Remove(del);
+    }
+
+    public void UnregisterForEvent(IObservable.EventCallbackDelegate del)
     {
         this.changeCallbacks.Remove(del);
     }
