@@ -1,31 +1,36 @@
-﻿using System.Runtime.Serialization.Formatters.Binary;
+﻿using System;
 using System.IO;
 using UnityEngine;
 
 public class DataSaver
 {
-
-    public static void SaveData(string filename, object data)
+    public static void SaveData<T>(string fileName, T data)
     {
-        BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Create(Application.persistentDataPath + "/" + filename);
-        bf.Serialize(file, data);
-        file.Close();
+        try
+        {
+            string json = JsonUtility.ToJson(data);
+            Debug.Log(json);
+            File.WriteAllText(Application.persistentDataPath + "/" + fileName, json);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Failed to save data to {fileName}: {ex.Message}");
+        }
     }
 
-    public static object LoadData(string fileName)
+    public static T LoadData<T>(string fileName)
     {
-        if(File.Exists(Application.persistentDataPath + "/" + fileName))
+        try
         {
-            BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Open(Application.persistentDataPath + "/" + fileName, FileMode.Open);
-            object o = bf.Deserialize(file);
-            file.Close();
-            return o;
+            if (!File.Exists(fileName)) return default;
+            string json = File.ReadAllText(Application.persistentDataPath + "/" + fileName);
+            Debug.Log(json);
+            return JsonUtility.FromJson<T>(json);
         }
-        else
+        catch (Exception ex)
         {
-            return null;
+            Debug.LogError($"Failed to load or deserialize data from {fileName}: {ex.Message}");
+            return default;
         }
     }
 }

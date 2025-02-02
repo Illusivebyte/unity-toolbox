@@ -10,37 +10,34 @@ public class StringVariable : Variable<string>
     {
 		get
 		{
-			return this.value;
+			return value;
 		}
 		set
 		{
 			if (this.value != value)
             {
 				this.value = value;
-				this.ReportChange();
-				if(this.debug)
-					Debug.Log (this.name + ": " + this.value);
+				ReportChange();
+				if(debug)
+					Debug.Log (name + ": " + this.value);
 			}
 		}
 	}
 
     public override void SaveVariable()
     {
-        DataSaver.SaveData(this.fileName, (new StringData(this.Value)as object));
+        DataSaver.SaveData<StringData>(fileName, new StringData(value));
     }
 
     public override void LoadVariable()
     {
-        StringData data = DataSaver.LoadData(this.fileName) as StringData;
-        if (data != null)
+        StringData data = DataSaver.LoadData<StringData>(fileName);
+        if (data == null)
         {
-            this.Value = data.value;
-        }
-        else
-        {
-            Debug.Log(this.name +": No file found to load");
-        }
-
+            Value = "";
+            return;
+        } 
+        Value = data.value;
     }
     
     [System.Serializable]

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UIElements;
 
 [CreateAssetMenu(menuName="Variable/New Int")]
 public class IntVariable : Variable <int>
@@ -16,36 +17,33 @@ public class IntVariable : Variable <int>
     {
 		get
 		{
-			return this.value;
+			return value;
 		}
 		set
 		{
 			if (this.value != value) {
 				this.value = value;
-				this.ReportChange();
-				if(this.debug)
-					Debug.Log (this.name + ": " + this.value);
+				ReportChange();
+				if(debug)
+					Debug.Log (name + ": " + this.value);
 			}
 		}
 	}
 
     public override void SaveVariable()
     {
-        DataSaver.SaveData(this.fileName, (new IntData(this.Value)as object));
+        DataSaver.SaveData<IntData>(fileName, new IntData(value));
     }
 
     public override void LoadVariable()
     {
-        IntData data = DataSaver.LoadData(this.fileName) as IntData;
-        if (data != null)
+        IntData data = DataSaver.LoadData<IntData>(fileName);
+        if (data == null)
         {
-            this.Value = data.value;
+            Value = 0;
+            return;
         }
-        else
-        {
-            Debug.Log(this.name +": No file found to load");
-        }
-
+        Value = data.value;
     }
 
     [System.Serializable]

@@ -9,37 +9,34 @@ public class FloatVariable : Variable<float>
 	public override float Value{
 		get
 		{
-			return this.value;
+			return value;
 		}
 		set
 		{
 			if (this.value != value)
             {
 				this.value = value;
-				this.ReportChange();
+				ReportChange();
 				if(this.debug)
-					Debug.Log (this.name + ": " + this.value);
+					Debug.Log (name + ": " + this.value);
 			}
 		}
 	}
 
     public override void SaveVariable()
     {
-        DataSaver.SaveData(this.fileName, (new FloatData(this.Value)as object));
+        DataSaver.SaveData<FloatData>(fileName, new FloatData(Value));
     }
 
     public override void LoadVariable()
     {
-        FloatData data = DataSaver.LoadData(this.fileName) as FloatData;
-        if (data != null)
+        FloatData data = DataSaver.LoadData<FloatData>(fileName);
+        if (data == null)
         {
-            this.Value = data.value;
+           Value = 0f;
+           return;
         }
-        else
-        {
-            Debug.Log(this.name +": No file found to load");
-        }
-
+        Value = data.value;
     }
     
     [System.Serializable]

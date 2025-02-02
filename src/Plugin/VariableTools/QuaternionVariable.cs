@@ -10,37 +10,34 @@ public class QuaternionVariable : Variable<Quaternion>
     {
 		get
 		{
-			return this.value;
+			return value;
 		}
 		set
 		{
 			if (this.value != value) 
             {
 				this.value = value;
-				this.ReportChange();
+				ReportChange();
 				if(this.debug)
-					Debug.Log (this.name + ": " + this.value);
+					Debug.Log (name + ": " + this.value);
 			}
 		}
 	}
 
     public override void SaveVariable()
     {
-        DataSaver.SaveData(this.fileName, (new QuaternionData(this.Value)as object));
+        DataSaver.SaveData<QuaternionData>(fileName, new QuaternionData(Value));
     }
 
     public override void LoadVariable()
     {
-        QuaternionData data = DataSaver.LoadData(this.fileName) as QuaternionData;
-        if (data != null)
+        QuaternionData data = DataSaver.LoadData<QuaternionData>(fileName);
+        if (data == null)
         {
-            this.Value = data.value;
+            Value = new Quaternion();
+            return;
         }
-        else
-        {
-            Debug.Log(this.name +": No file found to load");
-        }
-
+        Value = data.value;
     }
     
     [System.Serializable]

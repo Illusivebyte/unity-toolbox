@@ -15,37 +15,35 @@ public class Vector2Variable : Variable<Vector2>
 	public override Vector2 Value{
 		get
 		{
-			return this.value;
+			return value;
 		}
 		set
 		{
 			if (this.value != value)
             {
 				this.value = value;
-				this.ReportChange();
-				if(this.debug)
-					Debug.Log (this.name + ": " + this.value);
+				ReportChange();
+				if(debug)
+					Debug.Log (name + ": " + this.value);
 			}
 		}
 	}
     public override void SaveVariable()
     {
-        DataSaver.SaveData(this.fileName, (new Vector2Data(this.Value) as object));
+        DataSaver.SaveData<Vector2Data>(fileName, new Vector2Data(this.Value));
     }
 
     public override void LoadVariable()
     {
-        Vector2Data data = DataSaver.LoadData(this.fileName) as Vector2Data;
-        if (data != null)
+        Vector2Data data = DataSaver.LoadData<Vector2Data>(fileName);
+        if (data == null)
         {
-            this.Value = data.value;
+            Value = new Vector2();
+            return;
         }
-        else
-        {
-            Debug.Log(this.name +": No file found to load");
-        }
-
+        Value = data.value;
     }
+
     [System.Serializable]
     protected class Vector2Data
     {

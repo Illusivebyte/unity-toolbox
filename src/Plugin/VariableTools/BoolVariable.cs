@@ -5,42 +5,39 @@ public class BoolVariable : Variable<bool>
 {
 	[SerializeField]
 	private bool value;
-    public override System.Type type{ get{ return typeof(bool);}}
+    public override System.Type type{get{ return typeof(bool);}}
 	public override bool Value
     {
 		get
 		{
-			return this.value;
+			return value;
 		}
 		set
 		{
 			if (this.value != value) 
             {
 				this.value = value;
-				this.ReportChange();
-				if(this.debug)
-					Debug.Log (this.name + ": " + this.value);
+				ReportChange();
+				if(debug)
+					Debug.Log (name + ": " + this.value);
 			}
 		}
 	}
 
     public override void SaveVariable()
     {
-        DataSaver.SaveData(this.fileName, (new BoolData(this.Value)as object));
+        DataSaver.SaveData<BoolData>(fileName, new BoolData(value));
     }
 
     public override void LoadVariable()
     {
-        BoolData data = DataSaver.LoadData(this.fileName) as BoolData;
-        if (data != null)
+        BoolData data = DataSaver.LoadData<BoolData>(fileName);
+        if (data == null)
         {
-            this.Value = data.value;
+            Value = false;
+            return;
         }
-        else
-        {
-            Debug.Log(this.name +": No file found to load");
-        }
-
+        Value = data.value;
     }
     
     [System.Serializable]

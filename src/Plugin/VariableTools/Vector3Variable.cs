@@ -15,35 +15,33 @@ public class Vector3Variable : Variable<Vector3>
 	public override Vector3 Value{
 		get
 		{
-			return this.value;
+			return value;
 		}
 		set
 		{
 			if (this.value != value)
             {
 				this.value = value;
-				this.ReportChange();
-				if(this.debug)
-					Debug.Log (this.name + ": " + this.value);
+				ReportChange();
+				if(debug)
+					Debug.Log (name + ": " + this.value);
 			}
 		}
 	}
     public override void SaveVariable()
     {
-        DataSaver.SaveData(this.fileName, (new Vector3Data(this.Value) as object));
+        DataSaver.SaveData<Vector3Data>(fileName, new Vector3Data(Value));
     }
 
     public override void LoadVariable()
     {
-        Vector3Data data = DataSaver.LoadData(this.fileName) as Vector3Data;
-        if (data != null)
+        Vector3Data data = DataSaver.LoadData<Vector3Data>(fileName);
+        if (data == null)
         {
-            this.Value = data.value;
+            Value = new Vector3();
+            return;
         }
-        else
-        {
-            Debug.Log(this.name +": No file found to load");
-        }
+        Value = data.value;
 
     }
     [System.Serializable]
